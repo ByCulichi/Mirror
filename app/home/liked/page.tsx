@@ -5,15 +5,11 @@ import Image from "next/image"
 import { Play, Heart, Clock, MoreHorizontal, Shuffle, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { usePlayer } from "@/contexts/player-context"
-import { useState } from "react"
 
 export default function LikedSongsPage() {
-  const { playTrack, currentTrack } = usePlayer()
-  const [likedTracks, setLikedTracks] = useState(mockTracks.filter((t) => t.liked))
+  const { playTrack, currentTrack, likedTracks, toggleLike } = usePlayer()
 
-  const toggleLike = (trackId: string) => {
-    setLikedTracks((prev) => prev.filter((t) => t.id !== trackId))
-  }
+  const likedTracksArray = mockTracks.filter((t) => likedTracks.has(t.id))
 
   return (
     <div className="min-h-screen">
@@ -28,7 +24,7 @@ export default function LikedSongsPage() {
             <div className="flex items-center gap-2 text-sm text-white">
               <span className="font-semibold">Christian Velasco</span>
               <span>•</span>
-              <span>{likedTracks.length} canciones</span>
+              <span>{likedTracksArray.length} canciones</span>
             </div>
           </div>
         </div>
@@ -40,7 +36,7 @@ export default function LikedSongsPage() {
             <Button
               size="icon"
               className="h-14 w-14 rounded-full bg-green-500 text-black hover:bg-green-400 hover:scale-105 transition-transform shadow-xl"
-              onClick={() => likedTracks.length > 0 && playTrack(likedTracks[0])}
+              onClick={() => likedTracksArray.length > 0 && playTrack(likedTracksArray[0])}
             >
               <Play className="h-6 w-6 fill-current ml-0.5" />
             </Button>
@@ -63,7 +59,7 @@ export default function LikedSongsPage() {
               </div>
             </div>
 
-            {likedTracks.map((track, index) => (
+            {likedTracksArray.map((track, index) => (
               <div
                 key={track.id}
                 className={`grid grid-cols-[16px_4fr_2fr_1fr_60px] gap-4 px-4 py-2 rounded-md hover:bg-white/10 transition-colors group cursor-pointer ${

@@ -29,17 +29,28 @@ interface PlayerProps {
 }
 
 export function Player({ demoMode }: PlayerProps) {
-  const { currentTrack, isPlaying, volume, progress, togglePlay, setVolume, setProgress, nextTrack, previousTrack } =
-    usePlayer()
+  const {
+    currentTrack,
+    isPlaying,
+    volume,
+    progress,
+    togglePlay,
+    setVolume,
+    setProgress,
+    nextTrack,
+    previousTrack,
+    toggleLike: toggleLikeContext,
+    isTrackLiked,
+  } = usePlayer()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [showVolumeLevel, setShowVolumeLevel] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [previousVolume, setPreviousVolume] = useState(volume)
-  const [isLiked, setIsLiked] = useState(false)
   const [isDraggingProgress, setIsDraggingProgress] = useState(false)
   const [isDraggingVolume, setIsDraggingVolume] = useState(false)
 
   const track = currentTrack || mockCurrentTrack
+  const isLiked = isTrackLiked(track.id)
 
   useEffect(() => {
     if (!audioRef.current && typeof window !== "undefined") {
@@ -127,7 +138,7 @@ export function Player({ demoMode }: PlayerProps) {
   }
 
   const toggleLike = () => {
-    setIsLiked(!isLiked)
+    toggleLikeContext(track.id)
   }
 
   return (
@@ -172,7 +183,7 @@ export function Player({ demoMode }: PlayerProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-gray-400 hover:text-white"
+              className="h-8 w-8 md:h-10 md:w-10 text-gray-400 hover:text-white"
               onClick={previousTrack}
             >
               <SkipBack className="h-4 w-4 md:h-5 md:w-5 fill-current" />
@@ -190,7 +201,12 @@ export function Player({ demoMode }: PlayerProps) {
               )}
             </Button>
 
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-white" onClick={nextTrack}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 md:h-10 md:w-10 text-gray-400 hover:text-white"
+              onClick={nextTrack}
+            >
               <SkipForward className="h-4 w-4 md:h-5 md:w-5 fill-current" />
             </Button>
 

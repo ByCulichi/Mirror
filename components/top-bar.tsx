@@ -1,13 +1,14 @@
 "use client"
 
 import type React from "react"
-
-import { ChevronLeft, ChevronRight, Home, Search, Bell, User, MoreHorizontal, Menu } from "lucide-react"
+import { ChevronLeft, ChevronRight, Home, Search, Bell, User, MoreHorizontal, Menu, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { HamburgerMenu } from "@/components/hamburger-menu"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface TopBarProps {
   onToggleSidebar?: () => void
@@ -37,13 +38,16 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
           <Menu className="h-5 w-5" />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hidden lg:flex h-8 w-8 rounded-full text-white hover:bg-white/10"
-        >
-          <MoreHorizontal className="h-5 w-5" />
-        </Button>
+        <HamburgerMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden lg:flex h-8 w-8 rounded-full text-white hover:bg-white/10"
+          >
+            <MoreHorizontal className="h-5 w-5" />
+          </Button>
+        </HamburgerMenu>
+
         <Button
           variant="ghost"
           size="icon"
@@ -63,25 +67,48 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
         </Button>
       </div>
 
-      <div className="flex items-center gap-2 flex-1 max-w-xl">
+      <div className="flex items-center gap-2 flex-1 max-w-2xl bg-[#242424] rounded-full px-2 py-1">
         <Button
           variant="ghost"
           size="icon"
-          className="h-12 w-12 rounded-full bg-[#242424] text-white hover:bg-[#2a2a2a]"
+          className="h-10 w-10 rounded-full text-white hover:bg-[#2a2a2a] flex-shrink-0"
           onClick={() => router.push("/home")}
         >
           <Home className="h-5 w-5" />
         </Button>
-        <form onSubmit={handleSearch} className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+
+        <div className="h-6 w-px bg-gray-700 flex-shrink-0" />
+
+        <form onSubmit={handleSearch} className="relative flex-1 min-w-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
           <Input
             type="search"
             placeholder="¿Qué quieres reproducir?"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-4 bg-[#242424] border-0 rounded-full text-white placeholder:text-gray-400 hover:bg-[#2a2a2a] focus:bg-[#333] focus:ring-2 focus:ring-white/10"
+            className="w-full h-10 pl-12 pr-4 bg-transparent border-0 text-white placeholder:text-gray-400 focus:outline-none focus:ring-0"
           />
         </form>
+
+        <div className="h-6 w-px bg-gray-700 flex-shrink-0" />
+
+        <TooltipProvider>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full text-white hover:bg-[#2a2a2a] flex-shrink-0"
+                onClick={() => router.push("/home/browse")}
+              >
+                <Compass className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="bg-[#282828] text-white border-gray-700">
+              <p className="text-sm">Explorar</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       <div className="flex items-center gap-2">

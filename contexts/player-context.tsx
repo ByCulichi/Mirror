@@ -43,7 +43,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     (track: Track) => {
       console.log("[v0] Playing track:", track.name)
       setCurrentTrack(track)
-      setIsPlaying(true)
+      setIsPlaying(!!track.preview_url)
       setProgressState(0)
       const index = queue.findIndex((t) => t.id === track.id)
       if (index !== -1) {
@@ -54,9 +54,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   )
 
   const togglePlay = useCallback(() => {
-    console.log("[v0] Toggle play:", !isPlaying)
-    setIsPlaying((prev) => !prev)
-  }, [isPlaying])
+    if (currentTrack?.preview_url) {
+      console.log("[v0] Toggle play:", !isPlaying)
+      setIsPlaying((prev) => !prev)
+    }
+  }, [isPlaying, currentTrack])
 
   const setVolume = useCallback((newVolume: number) => {
     setVolumeState(newVolume)
